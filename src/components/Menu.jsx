@@ -5,6 +5,11 @@ import { gsap } from "gsap";
 import Script from "next/script";
 
 const Menu = () => {
+  const getAudioPath = (filename) => {
+    const isProd = typeof window !== "undefined" && window.location.pathname.startsWith("/bitkraft");
+    return (isProd ? "/bitkraft" : "") + filename;
+  };
+
   const menuRef = useRef(null);
   const joystickRef = useRef(null);
   const menuOverlayRef = useRef(null);
@@ -124,7 +129,7 @@ const Menu = () => {
     if (!isOpenRef.current) {
       isOpenRef.current = true;
       try {
-        new Audio("/menu-open.mp3").play();
+        new Audio(getAudioPath("/menu-open.mp3")).play();
       } catch (e) {}
 
       gsap.to(menuOverlay, {
@@ -176,7 +181,7 @@ const Menu = () => {
     } else {
       isOpenRef.current = false;
       try {
-        new Audio("/menu-close.mp3").play();
+        new Audio(getAudioPath("/menu-close.mp3")).play();
       } catch (e) {}
 
       gsap.to([menuOverlayNav, menuOverlayFooter], {
@@ -267,7 +272,7 @@ const Menu = () => {
           segment.style.zIndex = "10";
           if (isOpenRef.current) {
             try {
-              new Audio("/menu-select.mp3").play();
+              new Audio(getAudioPath("/menu-select.mp3")).play();
             } catch (e) {}
           }
         }
@@ -346,7 +351,7 @@ const Menu = () => {
       segment.addEventListener("mouseenter", () => {
         if (isOpenRef.current) {
           try {
-            new Audio("/menu-select.mp3").play();
+            new Audio(getAudioPath("/menu-select.mp3")).play();
           } catch (e) {}
         }
       });

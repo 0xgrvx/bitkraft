@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  basePath: '/bitkraft',
+  basePath: process.env.NODE_ENV === 'production' ? '/bitkraft' : '',
   output: 'export',
   images: { unoptimized: true },
 };
