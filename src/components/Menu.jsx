@@ -369,7 +369,7 @@ const Menu = () => {
 
     initCenterDrag();
 
-    const handleResize = () => {
+    const resizeObserver = new ResizeObserver(() => {
       responsiveConfigRef.current = getResponsiveConfig();
       if (menu) {
         menu.style.width = `${responsiveConfigRef.current.menuSize}px`;
@@ -379,14 +379,17 @@ const Menu = () => {
           updateSegmentStyles(segment, index, menuItems.length);
         });
       }
-    };
-    window.addEventListener("resize", handleResize);
+    });
+
+    if (typeof window !== "undefined") {
+      resizeObserver.observe(document.body);
+    }
 
     return () => {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
-      window.removeEventListener("resize", handleResize);
+      resizeObserver.disconnect();
     };
   }, []);
 
