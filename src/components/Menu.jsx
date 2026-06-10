@@ -375,7 +375,7 @@ const Menu = () => {
       </div>
 
       <div className="menu-overlay" ref={menuOverlayRef}>
-        <div className="menu-bg"></div>
+        <div className="menu-bg" style={{ backgroundImage: `url(${getAudioPath('/menu.jpg')})` }}></div>
 
         <div className="menu-overlay-nav" ref={menuOverlayNavRef}>
           <div className="close-btn" onClick={toggleMenu}>
