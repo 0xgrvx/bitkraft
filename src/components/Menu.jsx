@@ -53,11 +53,7 @@ const Menu = () => {
     };
   };
 
-  const createSegment = (item, index, total) => {
-    const segment = document.createElement("a");
-    segment.className = "menu-segment";
-    segment.href = item.href;
-
+  const updateSegmentStyles = (segment, index, total) => {
     const { menuSize, center, innerRadius, outerRadius, contentRadius } =
       responsiveConfigRef.current;
 
@@ -104,14 +100,27 @@ const Menu = () => {
     const contentY =
       center + contentRadius * Math.sin(((centerAngle - 90) * Math.PI) / 180);
 
+    const contentEl = segment.querySelector(".segment-content");
+    if (contentEl) {
+      contentEl.style.left = `${contentX}px`;
+      contentEl.style.top = `${contentY}px`;
+      contentEl.style.transform = "translate(-50%, -50%)";
+    }
+  };
+
+  const createSegment = (item, index, total) => {
+    const segment = document.createElement("a");
+    segment.className = "menu-segment";
+    segment.href = getAudioPath(item.href);
+
     segment.innerHTML = `
-      <div class="segment-content" 
-        style="left: ${contentX}px; top: ${contentY}px; transform: translate(-50%, -50%);">
+      <div class="segment-content">
         <ion-icon name="${item.icon}"></ion-icon>
         <div class="label">${item.label}</div>
       </div>
     `;
 
+    updateSegmentStyles(segment, index, total);
     return segment;
   };
 
@@ -360,10 +369,24 @@ const Menu = () => {
 
     initCenterDrag();
 
+    const handleResize = () => {
+      responsiveConfigRef.current = getResponsiveConfig();
+      if (menu) {
+        menu.style.width = `${responsiveConfigRef.current.menuSize}px`;
+        menu.style.height = `${responsiveConfigRef.current.menuSize}px`;
+        const segments = menu.querySelectorAll(".menu-segment");
+        segments.forEach((segment, index) => {
+          updateSegmentStyles(segment, index, menuItems.length);
+        });
+      }
+    };
+    window.addEventListener("resize", handleResize);
+
     return () => {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
